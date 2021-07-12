@@ -1,0 +1,148 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright (c) 2021, DroidDrive
+# -----------------------------------------------------------------------------
+def init(module):
+    module.name = "lely-core"
+    module.description = "lely canopen modm module"
+
+def prepare(module, options):
+    device = options[":target"]
+    core = device.get_driver("core")
+    if not (core and core["type"].startswith("cortex-m")):
+        return False
+    module.depends(
+        ":architecture:assert",
+        ":cmsis:device",
+        ":platform:clock")
+    return True
+
+def build(env):
+    env.outbasepath = "modm/ext/lely-core"
+    generalIgnoreFiles = [
+        "Makefile", "*.am", "*.in", "*.la", "*.lo", "*.o", "*.rc"
+    ]
+    specificUnbuildableFiles = [
+        #"*threads*",
+        #"*tap*",
+    ]
+    filterFiles = []
+    filterFiles.extend(generalIgnoreFiles)
+    filterFiles.extend(specificUnbuildableFiles)
+
+    #### copy stuff we need
+    env.copy("lely-core/config.h", "include/lely/config.h", ignore=env.ignore_files(*filterFiles))
+    env.copy("lely-core/include/", "include", ignore=env.ignore_files(*filterFiles))
+    env.copy("lely-core/lib/io2", "src/io2", ignore=env.ignore_files(*filterFiles))
+    env.copy("lely-core/lib/io", "src/io", ignore=env.ignore_files(*filterFiles))
+    env.copy("lely-core/lib/util", "src/util", ignore=env.ignore_files(*filterFiles))
+    env.copy("lely-core/lib/ev", "src/ev", ignore=env.ignore_files(*filterFiles))
+    env.copy("lely-core/lib/coapp", "src/coapp", ignore=env.ignore_files(*filterFiles))
+    env.copy("lely-core/lib/co", "src/co", ignore=env.ignore_files(*filterFiles))
+    env.copy("lely-core/lib/can", "src/can", ignore=env.ignore_files(*filterFiles))
+
+    ###
+    env.collect(":build:path.include", "modm/ext/lely-core/include")
+
+    ### scons c++ preprocessor flags
+    cFlags = {
+        #"-std": "c99", 
+        "-std": "c11",
+    }
+    cppFlags = {
+        "-std": "c++20",
+    }
+
+    ### https://opensource.lely.com/canopen/docs/configuration/#features
+    defines = {
+        ### os dependent things
+        #"_WIN32": 0,
+        #"_WIN64": 0,
+        "_POSIX_C_SOURCE": -1,
+        #### compiler specific
+        #"LELY_NO_CXX": 0,
+        #### memory specific
+        "LELY_HAVE_POSIX_MEMALIGN": 0,
+        "LELY_NO_MALLOC": 1,
+        "LELY_NO_TERMINATE": 1,
+        #"LELY_HAVE_UCHAR_H": 0,
+        #"LELY_BIG_ENDIAN": 0,
+        #"LELY_LITTLE_ENDIAN": 1,
+        "LELY_IO_USER_CAN_RXLEN": 32,
+        "LELY_FIBER_STKSZ": 4096,
+        
+        #### sys
+        "HAVE_SYS_STAT_H": 1,
+        "HAVE_SYS_TYPES_H": 1,
+        "HAVE_UNISTD_H": 1,
+        "HAVE_MEMORY_H": 1,
+        "HAVE_STDINT_H": 1,
+        "HAVE_STDLIB_H": 1,
+        "HAVE_STRINGS_H": 1,
+        "HAVE_STRING_H": 1,
+
+        #### runtime specific
+        #"LELY_NO_HOSTED": 1,
+        "LELY_KEEP_TIME_HOSTED": 1,
+        "LELY_KEEP_CPP_API_STUFF": 1,
+        "LELY_NO_THREADS": 1,
+        #"LELY_HAVE_THREADS_H": 0,
+        #"LELY_HAVE_PTHREAD_H": 0,
+        #"LELY_NO_ATOMICS": 0,
+        #"LELY_NO_STDIO": 1,
+        #"LELY_NO_DIAG": 1,
+        #"CLOCK_MONOTONIC": 1,
+        "LELY_HAVE_SYS_TYPES_H": 1,
+        #### can specific
+        "LELY_NO_CANFD": 1,
+        #### canopen specific
+        #"LELY_VLA_SIZE_MAX": 1,  ### maximum nubmer of events?, default 256 needs a lot of heap
+        #"LELY_NO_CO_EMCY": 0,
+        #"LELY_NO_CO_OBJ_NAME": 1, ### disable names in the object dictionary.
+        #"LELY_NO_CO_OBJ_DEFAULT": 1, ### disable default values in the object dictionary. 
+        "LELY_NO_CO_OBJ_FILE": 1, ### disable UploadFile/DownloadFile support for the object dictionary (automatically disabled when standard I/O support is disabled).
+        #"LELY_NO_CO_OBJ_UPLOAD": 1, ### disable custom upload indication functions in the object dictionary.
+        #"LELY_NO_CO_DCF": 0,
+        "LELY_NO_DCF_VIA_FILESYSTEM": 1, ### THIS SHOULD BE 1, THIS IS BAD
+        #"LELY_NO_CO_CSDO": 0,
+        #"LELY_NO_CO_LSS": 0,
+        #"LELY_NO_COAPP_SLAVE": 0,
+        #"LELY_NO_CO_MASTER": 0,
+        #"LELY_NO_CO_RPDO": 0,
+        #"LELY_NO_CO_TPDO": 0,
+        #"LELY_NO_CO_MPDO": 0,
+        #"LELY_NO_CO_SYNC": 0,
+        #"LELY_NO_CO_NG": 0,
+        #"LELY_NO_CO_NMT_BOOT": 0,
+        #"LELY_NO_CO_NMT_CFG": 0,
+        "LELY_NO_CO_DCF_RESTORE": 1, ### do not (re)store concise DCF of the application parameters.
+        #"LELY_NO_CO_TIME": 0,
+        #"LELY_NO_CO_OBJ_DEFAULT": 0,
+        #"LELY_NO_CO_OBJ_LIMITS": 0,
+        #### time
+        "LELY_HAVE_TIMESPEC": 1,
+        "LELY_HAVE_ITIMERSPEC": 1,
+        "LELY_HAVE_TIMESPEC_GET": 1,
+        "LELY_NO_TIMEOUT": 1, # should disable all uses of timespec_ ?
+        #### misc
+        #"LELY_NO_ERRNO": 0,
+        #"LELY_HAVE_TIMESPEC_GET": 1,
+        #### tooling
+        #"LELY_HAVE_VALGRIND": 0,
+        #"LELY_HAVE_HELGRIND": 0,
+    }
+
+    for k,v, in defines.items():
+        env.collect(":build:cppdefines", "%s=%s" % (k,v)) 
+    for k,v, in cFlags.items():
+        env.collect(":build:cflags", "%s=%s" % (k,v)) 
+    for k,v, in cppFlags.items():
+        env.collect(":build:cxxflags", "%s=%s" % (k,v)) 
+
+
+    env.collect(":build:cxxflags", "--warn-no-missing-field-initializers")
+    env.collect(":build:cxxflags", "--warn-no-write-strings")
+
+    
+
