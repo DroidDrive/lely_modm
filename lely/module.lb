@@ -3,8 +3,10 @@
 #
 # Copyright (c) 2021, DroidDrive
 # -----------------------------------------------------------------------------
+modulename = "lely-core"
+
 def init(module):
-    module.name = "lely-core"
+    module.name = modulename
     module.description = "lely canopen modm module"
 
 def prepare(module, options):
@@ -19,7 +21,7 @@ def prepare(module, options):
     return True
 
 def build(env):
-    env.outbasepath = "modm/ext/lely-core"
+    env.outbasepath = "lely-core"
     generalIgnoreFiles = [
         "Makefile", "*.am", "*.in", "*.la", "*.lo", "*.o", "*.rc"
     ]
@@ -43,7 +45,7 @@ def build(env):
     env.copy("lely-core/lib/can", "src/can", ignore=env.ignore_files(*filterFiles))
 
     ###
-    env.collect(":build:path.include", "modm/ext/lely-core/include")
+    env.collect(":build:path.include", "lely-core/include")
 
     ### scons c++ preprocessor flags
     cFlags = {

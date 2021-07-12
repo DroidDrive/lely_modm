@@ -4,6 +4,17 @@
 # Copyright (c) 2021, DroidDrive
 # -----------------------------------------------------------------------------
 
+import re
+import sys
+import glob
+import hashlib
+import platform
+
+from pathlib import Path
+from distutils.version import StrictVersion
+from git import Repo
+from os.path import normpath
+
 # Check for miminum required lbuild version
 import lbuild
 min_lbuild_version = "1.17.0"

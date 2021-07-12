@@ -1,4 +1,8 @@
 [submodule "lely/lely_core"]
-	path = lely/lely_core
-	url = git@github.com:DroidDrive/lely_core.git
+	path = lely/lely-core
+	url = git@github.com:DroidDrive/lely-core.git
+	branch = duck_devel_ecss
+[submodule "lely/lely-core"]
+	path = lely/lely-core
+	url = git@github.com:DroidDrive/lely-core.git
 	branch = duck_devel_ecss
