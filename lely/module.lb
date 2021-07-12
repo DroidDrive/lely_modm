@@ -3,6 +3,8 @@
 #
 # Copyright (c) 2021, DroidDrive
 # -----------------------------------------------------------------------------
+import os
+
 modulename = "lely-core"
 
 def init(module):
@@ -21,7 +23,9 @@ def prepare(module, options):
     return True
 
 def build(env):
-    env.outbasepath = "lely-core"
+    repoName = env.query(":repoName")
+    env.outbasepath = repoName
+
     generalIgnoreFiles = [
         "Makefile", "*.am", "*.in", "*.la", "*.lo", "*.o", "*.rc"
     ]
@@ -45,8 +49,10 @@ def build(env):
     env.copy("lely-core/lib/can", "src/can", ignore=env.ignore_files(*filterFiles))
 
     ###
-    env.collect(":build:path.include", "lely-core/include")
-
+    #includepath = os.path.join(env.outpath(""), "lely-core/include")
+    includepath = os.path.join(repoName, "include")
+    env.collect(":build:path.include", includepath)
+    
     ### scons c++ preprocessor flags
     cFlags = {
         #"-std": "c99", 
