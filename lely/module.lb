@@ -19,6 +19,7 @@ def prepare(module, options):
     module.depends(
         ":architecture:assert",
         ":cmsis:device",
+        ":processing:timer",
         ":platform:clock")
     return True
 
