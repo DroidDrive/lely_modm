@@ -49,6 +49,9 @@ def build(env):
     env.copy("lely-core/lib/co", "src/co", ignore=env.ignore_files(*filterFiles))
     env.copy("lely-core/lib/can", "src/can", ignore=env.ignore_files(*filterFiles))
 
+    #### copy addons we need (our user stuff)
+    env.copy("lely_addons/lely_utils.hpp", "include/lely_addons/lely_utils.hpp", ignore=env.ignore_files(*filterFiles))
+
     ###
     #includepath = os.path.join(env.outpath(""), "lely-core/include")
     includepath = os.path.join(repoName, "include")
