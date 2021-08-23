@@ -34,11 +34,15 @@ static void candump(const can_msg& msg_, uint8_t id = 0)
     MODM_LOG_INFO << "<- can" << id << " ";
     std::string tmp = ss.str() + "#";
     unsigned int id_length = log(msg_.id) / log(16) + 1;
-    for (unsigned i = id_length; i < 3; ++i) {
-        MODM_LOG_INFO << " ";
-    }
-    for (unsigned i = tmp.length() - id_length - 1; i < tmp.length(); ++i) {
-        MODM_LOG_INFO << tmp[i];
+    if (msg_.id == 0u) {
+        MODM_LOG_INFO << "000#";
+    } else {
+        for (unsigned i = id_length; i < 3; ++i) {
+            MODM_LOG_INFO << " ";
+        }
+        for (unsigned i = tmp.length() - id_length - 1; i < tmp.length(); ++i) {
+            MODM_LOG_INFO << tmp[i];
+        }
     }
     for (unsigned int i = 0; i < msg_.len; ++i) {
         MODM_LOG_INFO << modm::hex << msg_.data[i] << modm::ascii << " ";
