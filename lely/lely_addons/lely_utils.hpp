@@ -24,3 +24,22 @@ static bool convert_can_msg(const can_msg& in, modm::can::Message& out){
 	result = true;
 	return result;
 }
+
+static void candump(const can_msg& msg_, uint8_t id = 0) {
+
+	std::stringstream ss;
+  	ss << std::hex << static_cast<int>(msg_.id);
+	MODM_LOG_INFO << "<- can" << id << " ";
+  	std::string tmp = ss.str() + "#";
+  	unsigned int id_length = log(msg_.id)/log(16) + 1;
+	for (unsigned i = id_length; i < 3; ++i){
+		MODM_LOG_INFO << " ";
+	}
+  	for (unsigned i = tmp.length() - id_length - 1; i < tmp.length(); ++i){
+			MODM_LOG_INFO << tmp[i];
+  	}
+  	for (unsigned int i = 0; i < msg_.len; ++i){
+		MODM_LOG_INFO << modm::hex << msg_.data[i] << modm::ascii << " ";
+  	} 
+  	MODM_LOG_INFO << modm::endl;
+}
