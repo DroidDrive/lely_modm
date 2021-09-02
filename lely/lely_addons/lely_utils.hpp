@@ -28,7 +28,7 @@ static bool convert_can_msg(const can_msg& in, modm::can::Message& out)
     return result;
 }
 
-
+/*
 static std::string candump(const can_msg& msg_, uint8_t id = 0)
 {
     std::stringstream out;
@@ -53,3 +53,4 @@ static std::string candump(const can_msg& msg_, uint8_t id = 0)
     out << modm::endl;
     return out.str();
 }
+*/
