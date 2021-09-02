@@ -1,7 +1,8 @@
 #pragma once
 
 #include <lely/can/msg.h>
-#include <modm/board.hpp>
+#include <modm/architecture/interface/can_message.hpp>
+#include <modm/io/iostream.hpp>
 
 static bool convert_can_msg(const modm::can::Message& in, can_msg& out)
 {
@@ -27,25 +28,28 @@ static bool convert_can_msg(const can_msg& in, modm::can::Message& out)
     return result;
 }
 
-static void candump(const can_msg& msg_, uint8_t id = 0)
+
+static std::string candump(const can_msg& msg_, uint8_t id = 0)
 {
+    std::stringstream out;
     std::stringstream ss;
     ss << std::hex << static_cast<int>(msg_.id);
-    MODM_LOG_INFO << "<- can" << id << " ";
+    out << "<- can" << id << " ";
     std::string tmp = ss.str() + "#";
     unsigned int id_length = log(msg_.id) / log(16) + 1;
     if (msg_.id == 0u) {
-        MODM_LOG_INFO << "000#";
+        out << "000#";
     } else {
         for (unsigned i = id_length; i < 3; ++i) {
-            MODM_LOG_INFO << " ";
+            out << " ";
         }
         for (unsigned i = tmp.length() - id_length - 1; i < tmp.length(); ++i) {
-            MODM_LOG_INFO << tmp[i];
+            out << tmp[i];
         }
     }
     for (unsigned int i = 0; i < msg_.len; ++i) {
-        MODM_LOG_INFO << modm::hex << msg_.data[i] << modm::ascii << " ";
+        out << modm::hex << msg_.data[i] << modm::ascii << " ";
     }
-    MODM_LOG_INFO << modm::endl;
+    out << modm::endl;
+    return out.str();
 }
