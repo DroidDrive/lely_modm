@@ -1,6 +1,6 @@
 # lely_modm
 
-![image](https://user-images.githubusercontent.com/6985609/133220402-f460d9e1-3e2c-47be-966b-d880497aa15f.png)
+<img src="https://user-images.githubusercontent.com/6985609/133220402-f460d9e1-3e2c-47be-966b-d880497aa15f.png" alt="Ducktrain Logo" width="30%" >
 
 This is a modm repository (+module) containing a [fork](https://github.com/DroidDrive/lely-core) of the [lely canopen stack](https://opensource.lely.com/canopen/).
 
