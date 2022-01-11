@@ -39,7 +39,7 @@ def build(env):
     filterFiles.extend(specificUnbuildableFiles)
 
     #### copy stuff we need
-    env.copy("lely-core/config.h", "include/lely/config.h", ignore=env.ignore_files(*filterFiles))
+    env.copy("lely_addons/config.h", "include/lely/config.h", ignore=env.ignore_files(*filterFiles))
     env.copy("lely-core/include/", "include", ignore=env.ignore_files(*filterFiles))
     env.copy("lely-core/lib/io2", "src/io2", ignore=env.ignore_files(*filterFiles))
     env.copy("lely-core/lib/io", "src/io", ignore=env.ignore_files(*filterFiles))
@@ -81,7 +81,6 @@ def build(env):
         #"LELY_HAVE_UCHAR_H": 0,
         #"LELY_BIG_ENDIAN": 0,
         #"LELY_LITTLE_ENDIAN": 1,
-        "LELY_IO_USER_CAN_RXLEN": 8,
         "LELY_FIBER_STKSZ": 2048,
         
         #### sys
@@ -94,10 +93,15 @@ def build(env):
         "HAVE_STRINGS_H": 1,
         "HAVE_STRING_H": 1,
 
+        ### kikass13 extensions:
+        "LELY_KEEP_CPP_API_STUFF": 1,
+        "LELY_NO_DCF_VIA_FILESYSTEM": 1,
+        "LELY_IO_USER_CAN_RXLEN": 8,
+        "NO_IS_BOOTING_CHECK_WHEN_SDO_WAS_NOT_FOUND": 1,
+
         #### runtime specific
         #"LELY_NO_HOSTED": 1,
         "LELY_KEEP_TIME_HOSTED": 1,
-        "LELY_KEEP_CPP_API_STUFF": 1,
         "LELY_NO_THREADS": 1,
         #"LELY_HAVE_THREADS_H": 0,
         #"LELY_HAVE_PTHREAD_H": 0,
@@ -116,7 +120,6 @@ def build(env):
         "LELY_NO_CO_OBJ_FILE": 1, ### disable UploadFile/DownloadFile support for the object dictionary (automatically disabled when standard I/O support is disabled).
         #"LELY_NO_CO_OBJ_UPLOAD": 1, ### disable custom upload indication functions in the object dictionary.
         #"LELY_NO_CO_DCF": 0,
-        "LELY_NO_DCF_VIA_FILESYSTEM": 1, ### THIS SHOULD BE 1, THIS IS BAD
         #"LELY_NO_CO_CSDO": 0,
         #"LELY_NO_CO_LSS": 0,
         #"LELY_NO_COAPP_SLAVE": 0,
